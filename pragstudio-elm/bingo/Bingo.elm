@@ -1,6 +1,10 @@
 module Bingo where
 
 import Html
+import String
 
 main =
-  Html.text "Hello, World Elm"
+  "Bingo!"
+    |> String.toUpper
+    |> String.repeat 3
+    |> Html.text
