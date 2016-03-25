@@ -31,3 +31,7 @@
   List.map String.toUpper names
   ```
 
+### 12 Reactive Sort
+
+* Installing Package
+  `elm package install evancz/start-app`

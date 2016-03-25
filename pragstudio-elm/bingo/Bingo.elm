@@ -5,6 +5,8 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import String exposing (toUpper, repeat, trimRight)
 
+import StartApp.Simple
+
 -- MODEL
 
 newEntry phrase points id =
@@ -69,16 +71,19 @@ entryItem entry =
 entryList entries =
   ul [] (List.map entryItem entries)
 
-view model =
+view address model =
   div [ id "container"]
-      [
-        pageHeader,
+      [ pageHeader,
         entryList model.entries,
+        button
+          [ class "sort", onClick address Sort] [text "Sort"],
         pageFooter
       ]
 
 -- WIRE IT ALL TOGETHER
 main =
-  initialModel
-    |> update Sort
-    |> view
+  StartApp.Simple.start
+    { model = initialModel,
+      view = view,
+      update = update
+    }
