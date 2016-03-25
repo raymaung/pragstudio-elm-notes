@@ -35,3 +35,11 @@
 
 * Installing Package
   `elm package install evancz/start-app`
+
+### 13 Delete Entries
+
+* Anonymous Function
+  * `(\num1 num2 -> num1 + num2)`
+    * `\` denotes beginning of arguments
+  * `/=` means *not-equal*
+
