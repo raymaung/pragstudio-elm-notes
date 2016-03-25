@@ -21,3 +21,13 @@
   * `entry.wasSpoken` returns `False`
 * Updating attributes
   * `clonedEntry = { entry | points = 500, wasSpoken = True }`
+
+### 10 - Rendering the Mode
+
+* `List.map`
+* ```
+  import String
+  names = [ "larray", "moe", "curly" ]
+  List.map String.toUpper names
+  ```
+
