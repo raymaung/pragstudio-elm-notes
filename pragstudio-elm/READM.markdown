@@ -43,3 +43,9 @@
     * `\` denotes beginning of arguments
   * `/=` means *not-equal*
 
+### 14 Reactive Delete
+
+* Curlying
+  * `multiply num1 num2 = num1 * num2`
+  * `partialMultiPlay = multiply 3`
+  * `partialMultiPlay 2` returns `6`
