@@ -10337,6 +10337,16 @@ Elm.Bingo.make = function (_elm) {
    $StartApp$Simple = Elm.StartApp.Simple.make(_elm),
    $String = Elm.String.make(_elm);
    var _op = {};
+   var totalItem = function (total) {
+      return A2($Html.li,
+      _U.list([$Html$Attributes.$class("total")]),
+      _U.list([A2($Html.span,_U.list([$Html$Attributes.$class("label")]),_U.list([$Html.text("Total")]))
+              ,A2($Html.span,_U.list([$Html$Attributes.$class("points")]),_U.list([$Html.text($Basics.toString(total))]))]));
+   };
+   var totalPoints = function (entries) {
+      var spokenEntries = A2($List.filter,function (_) {    return _.wasSpoken;},entries);
+      return $List.sum(A2($List.map,function (_) {    return _.points;},spokenEntries));
+   };
    var pageFooter = A2($Html.footer,
    _U.list([]),
    _U.list([A2($Html.a,_U.list([$Html$Attributes.href("https://pragmaticstudio.com")]),_U.list([$Html.text("The Pragmatic Studio")]))]));
@@ -10363,7 +10373,11 @@ Elm.Bingo.make = function (_elm) {
               ,A2($Html.span,_U.list([$Html$Attributes.$class("points")]),_U.list([$Html.text($Basics.toString(entry.points))]))
               ,A2($Html.button,_U.list([$Html$Attributes.$class("delete"),A2($Html$Events.onClick,address,Delete(entry.id))]),_U.list([]))]));
    });
-   var entryList = F2(function (address,entries) {    var entryItems = A2($List.map,entryItem(address),entries);return A2($Html.ul,_U.list([]),entryItems);});
+   var entryList = F2(function (address,entries) {
+      var entryItems = A2($List.map,entryItem(address),entries);
+      var items = A2($Basics._op["++"],entryItems,_U.list([totalItem(totalPoints(entries))]));
+      return A2($Html.ul,_U.list([]),items);
+   });
    var Sort = {ctor: "Sort"};
    var view = F2(function (address,model) {
       return A2($Html.div,
@@ -10392,6 +10406,8 @@ Elm.Bingo.make = function (_elm) {
                               ,pageHeader: pageHeader
                               ,pageFooter: pageFooter
                               ,entryItem: entryItem
+                              ,totalPoints: totalPoints
+                              ,totalItem: totalItem
                               ,entryList: entryList
                               ,view: view
                               ,main: main};
