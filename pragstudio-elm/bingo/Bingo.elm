@@ -26,6 +26,19 @@ initialModel =
       ]
   }
 
+-- UPDATE
+
+type Action
+  = NoOp
+    | Sort
+
+update action model =
+  case action of
+    NoOp -> model
+
+    Sort ->
+      {model | entries = List.sortBy .points model.entries }
+
 -- VIEW
 
 title message times =
@@ -65,4 +78,7 @@ view model =
       ]
 
 -- WIRE IT ALL TOGETHER
-main = view initialModel
+main =
+  initialModel
+    |> update Sort
+    |> view
