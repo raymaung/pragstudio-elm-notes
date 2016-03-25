@@ -3,12 +3,21 @@ module Bingo where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Signal exposing(Address)
 import String exposing (toUpper, repeat, trimRight)
 
 import StartApp.Simple
 
 -- MODEL
 
+type alias Entry =
+  { phrase: String,
+    points: Int,
+    wasSpoken: Bool,
+    id: Int
+  }
+
+newEntry : String -> Int -> Int -> Entry
 newEntry phrase points id =
   {
     phrase = phrase,
@@ -17,6 +26,11 @@ newEntry phrase points id =
     id = id
   }
 
+type alias Model =
+  { entries: List Entry
+  }
+
+initialModel : Model
 initialModel =
   {
     entries =
@@ -36,6 +50,7 @@ type Action
     | Delete Int
     | Mark Int
 
+update : Action -> Model -> Model
 update action model =
   case action of
     NoOp -> model
@@ -60,6 +75,7 @@ update action model =
 
 -- VIEW
 
+title : String -> Int -> Html
 title message times =
   message ++ " "
     |> toUpper
@@ -67,10 +83,12 @@ title message times =
     |> trimRight
     |> text
 
+pageHeader : Html
 pageHeader =
   h1 [ id "logo", class "classy" ] [ title "bingo!" 3 ]
 
 
+pageFooter : Html
 pageFooter =
   footer []
     [
@@ -78,6 +96,7 @@ pageFooter =
         [ text "The Pragmatic Studio"]
     ]
 
+entryItem : Address Action -> Entry -> Html
 entryItem address entry =
   li [  classList [("highlight", entry.wasSpoken)],
         onClick address (Mark entry.id)
@@ -89,6 +108,7 @@ entryItem address entry =
         []
     ]
 
+totalPoints : List Entry -> Int
 totalPoints entries =
   let
     spokenEntries = List.filter .wasSpoken entries
@@ -97,6 +117,7 @@ totalPoints entries =
       |> List.map .points
       |> List.sum
 
+totalItem : Int -> Html
 totalItem total =
   li
     [ class "total"]
@@ -104,6 +125,7 @@ totalItem total =
       span [class "points"] [text (toString total)]
     ]
 
+entryList : Address Action -> List Entry -> Html
 entryList address entries =
   let
     entryItems = (List.map (entryItem address) entries)
@@ -111,6 +133,7 @@ entryList address entries =
   in
     ul [] items
 
+view : Address Action -> Model -> Html
 view address model =
   div [ id "container"]
       [ pageHeader,
@@ -121,6 +144,7 @@ view address model =
       ]
 
 -- WIRE IT ALL TOGETHER
+main: Signal Html
 main =
   StartApp.Simple.start
     { model = initialModel,

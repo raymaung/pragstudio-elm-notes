@@ -12,9 +12,6 @@ Elm.Repl.make = function (_elm) {
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
    var tsol = {ctor: "_Tuple0"};
-   var multiply = F2(function (num1,num2) {    return num1 * num2;});
-   var partialMultiPlay = multiply(3);
-   var x = multiply(3);
-   var deltron3030 = partialMultiPlay(2);
-   return _elm.Repl.values = {_op: _op,deltron3030: deltron3030,multiply: multiply,partialMultiPlay: partialMultiPlay,tsol: tsol,x: x};
+   var deltron3030 = 23.23;
+   return _elm.Repl.values = {_op: _op,deltron3030: deltron3030,tsol: tsol};
 };
