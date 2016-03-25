@@ -12,3 +12,12 @@
 * Start REPL
   * `elm repl`
 
+### 09 - Creating Entry
+
+* Create record
+  `entry = { phrase = "future-proof", points = 100, wasSpoken = False }`
+* Accessing attributes
+  * `entry.points` returns `100`
+  * `entry.wasSpoken` returns `False`
+* Updating attributes
+  * `clonedEntry = { entry | points = 500, wasSpoken = True }`
