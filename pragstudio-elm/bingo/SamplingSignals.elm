@@ -4,12 +4,12 @@ import Time
 
 delta: Signal Time.Time
 delta =
-  Signal.map Time.inSeconds (Time.fps 2)
+  Signal.map Time.inSeconds (Time.fps 15)
 
 clickPosition: Signal (Int, Int)
 clickPosition =
-  Signal.sampleOn Mouse.clicks Mouse.position
+  Signal.sampleOn delta Mouse.position
 
 main: Signal Element
 main =
-  Signal.map show delta
+  Signal.map show clickPosition

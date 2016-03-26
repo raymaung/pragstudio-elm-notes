@@ -5650,8 +5650,8 @@ Elm.Main.make = function (_elm) {
    $Signal = Elm.Signal.make(_elm),
    $Time = Elm.Time.make(_elm);
    var _op = {};
-   var clickPosition = A2($Signal.sampleOn,$Mouse.clicks,$Mouse.position);
-   var delta = A2($Signal.map,$Time.inSeconds,$Time.fps(2));
-   var main = A2($Signal.map,$Graphics$Element.show,delta);
+   var delta = A2($Signal.map,$Time.inSeconds,$Time.fps(15));
+   var clickPosition = A2($Signal.sampleOn,delta,$Mouse.position);
+   var main = A2($Signal.map,$Graphics$Element.show,clickPosition);
    return _elm.Main.values = {_op: _op,delta: delta,clickPosition: clickPosition,main: main};
 };
