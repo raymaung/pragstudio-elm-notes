@@ -5,17 +5,16 @@ Elm.Main.make = function (_elm) {
    if (_elm.Main.values) return _elm.Main.values;
    var _U = Elm.Native.Utils.make(_elm),
    $Basics = Elm.Basics.make(_elm),
-   $Char = Elm.Char.make(_elm),
    $Debug = Elm.Debug.make(_elm),
    $Graphics$Element = Elm.Graphics.Element.make(_elm),
-   $Keyboard = Elm.Keyboard.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
+   $Mouse = Elm.Mouse.make(_elm),
    $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
+   $Signal = Elm.Signal.make(_elm),
+   $Window = Elm.Window.make(_elm);
    var _op = {};
-   var characters = A2($Signal.map,$Char.fromCode,$Keyboard.presses);
-   var pressedDigit = A2($Signal.map,$Char.isDigit,characters);
-   var main = A2($Signal.map,$Graphics$Element.show,pressedDigit);
-   return _elm.Main.values = {_op: _op,characters: characters,pressedDigit: pressedDigit,main: main};
+   var view = F2(function (w,x) {    var side = _U.cmp(x,w / 2 | 0) < 0 ? "Left" : "Right";return $Graphics$Element.show(side);});
+   var main = A3($Signal.map2,view,$Window.width,$Mouse.x);
+   return _elm.Main.values = {_op: _op,view: view,main: main};
 };
