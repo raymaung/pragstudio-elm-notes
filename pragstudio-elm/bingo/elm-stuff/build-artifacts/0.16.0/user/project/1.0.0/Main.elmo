@@ -12,9 +12,10 @@ Elm.Main.make = function (_elm) {
    $Mouse = Elm.Mouse.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
-   $Window = Elm.Window.make(_elm);
+   $Time = Elm.Time.make(_elm);
    var _op = {};
-   var view = F2(function (w,x) {    var side = _U.cmp(x,w / 2 | 0) < 0 ? "Left" : "Right";return $Graphics$Element.show(side);});
-   var main = A3($Signal.map2,view,$Window.width,$Mouse.x);
-   return _elm.Main.values = {_op: _op,view: view,main: main};
+   var clickPosition = A2($Signal.sampleOn,$Mouse.clicks,$Mouse.position);
+   var delta = A2($Signal.map,$Time.inSeconds,$Time.fps(2));
+   var main = A2($Signal.map,$Graphics$Element.show,delta);
+   return _elm.Main.values = {_op: _op,delta: delta,clickPosition: clickPosition,main: main};
 };
