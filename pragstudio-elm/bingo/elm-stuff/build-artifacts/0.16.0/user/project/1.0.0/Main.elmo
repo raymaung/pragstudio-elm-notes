@@ -11,8 +11,10 @@ Elm.Main.make = function (_elm) {
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
-   $Time = Elm.Time.make(_elm);
+   $Window = Elm.Window.make(_elm);
    var _op = {};
-   var main = A2($Signal.map,$Graphics$Element.show,$Time.every($Time.second));
-   return _elm.Main.values = {_op: _op,main: main};
+   var area = function (_p0) {    var _p1 = _p0;return _p1._0 * _p1._1;};
+   var windowArea = A2($Signal.map,area,$Window.dimensions);
+   var main = A2($Signal.map,$Graphics$Element.show,windowArea);
+   return _elm.Main.values = {_op: _op,area: area,windowArea: windowArea,main: main};
 };
