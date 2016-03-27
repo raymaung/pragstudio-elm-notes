@@ -10078,13 +10078,13 @@ Elm.Main.make = function (_elm) {
    var _op = {};
    var inbox = $Signal.mailbox("Wating...");
    var messages = inbox.signal;
-   var view = function (greeting) {
+   var view = F2(function (address,greeting) {
       return A2($Html.div,
       _U.list([]),
-      _U.list([A2($Html.button,_U.list([A2($Html$Events.onClick,inbox.address,"Hello")]),_U.list([$Html.text("Click for English")]))
-              ,A2($Html.button,_U.list([A2($Html$Events.onClick,inbox.address,"Salut!")]),_U.list([$Html.text("Click for French")]))
+      _U.list([A2($Html.button,_U.list([A2($Html$Events.onClick,address,"Hello")]),_U.list([$Html.text("Click for English")]))
+              ,A2($Html.button,_U.list([A2($Html$Events.onClick,address,"Salut!")]),_U.list([$Html.text("Click for French")]))
               ,A2($Html.p,_U.list([]),_U.list([$Html.text(greeting)]))]));
-   };
-   var main = A2($Signal.map,view,messages);
+   });
+   var main = A2($Signal.map,view(inbox.address),messages);
    return _elm.Main.values = {_op: _op,view: view,inbox: inbox,messages: messages,main: main};
 };
