@@ -13,9 +13,15 @@ Elm.Spaceship.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
+   $Signal = Elm.Signal.make(_elm),
+   $Time = Elm.Time.make(_elm),
+   $Window = Elm.Window.make(_elm);
    var _op = {};
-   var direction = A2($Signal.map,function (_) {    return _.x;},$Keyboard.arrows);
+   var direction = function () {
+      var delta = $Time.fps(30);
+      var x = A2($Signal.map,function (_) {    return _.x;},$Keyboard.arrows);
+      return A2($Signal.sampleOn,delta,x);
+   }();
    var drawShip = F2(function (gameHeight,ship) {
       var shipColor = ship.isFiring ? $Color.red : $Color.blue;
       return A2($Graphics$Collage.alpha,
@@ -25,19 +31,19 @@ Elm.Spaceship.make = function (_elm) {
       A2($Graphics$Collage.rotate,$Basics.degrees(90),A2($Graphics$Collage.filled,shipColor,A2($Graphics$Collage.ngon,3,30)))));
    });
    var drawGame = F2(function (w,h) {    return A2($Graphics$Collage.filled,$Color.gray,A2($Graphics$Collage.rect,w,h));});
-   var view = function (ship) {
-      var _p0 = {ctor: "_Tuple2",_0: 400,_1: 400};
-      var w = _p0._0;
-      var h = _p0._1;
-      var _p1 = {ctor: "_Tuple2",_0: $Basics.toFloat(w),_1: $Basics.toFloat(h)};
-      var w$ = _p1._0;
-      var h$ = _p1._1;
-      return A3($Graphics$Collage.collage,w,h,_U.list([A2(drawGame,w$,h$),A2(drawShip,h$,ship),$Graphics$Collage.toForm($Graphics$Element.show(ship))]));
-   };
+   var view = F2(function (_p0,ship) {
+      var _p1 = _p0;
+      var _p4 = _p1._0;
+      var _p3 = _p1._1;
+      var _p2 = {ctor: "_Tuple2",_0: $Basics.toFloat(_p4),_1: $Basics.toFloat(_p3)};
+      var w$ = _p2._0;
+      var h$ = _p2._1;
+      return A3($Graphics$Collage.collage,_p4,_p3,_U.list([A2(drawGame,w$,h$),A2(drawShip,h$,ship),$Graphics$Collage.toForm($Graphics$Element.show(ship))]));
+   });
    var update = F2(function (x,ship) {    return _U.update(ship,{position: ship.position + x});});
    var initialShip = {position: 0,powerLevel: 10,isFiring: false};
    var model = A3($Signal.foldp,update,initialShip,direction);
-   var main = A2($Signal.map,view,model);
+   var main = A3($Signal.map2,view,$Window.dimensions,model);
    var Model = F3(function (a,b,c) {    return {position: a,powerLevel: b,isFiring: c};});
    return _elm.Spaceship.values = {_op: _op
                                   ,Model: Model

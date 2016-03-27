@@ -28,12 +28,10 @@ update x ship =
   { ship | position = ship.position + x }
 
 
-
 -- VIEW
-view : Model -> Element
-view ship =
+view : (Int, Int) -> Model -> Element
+view (w, h) ship =
   let
-    (w, h) = (400, 400)
     (w', h') = (toFloat w, toFloat h)
   in
     collage w h
@@ -41,6 +39,7 @@ view ship =
         drawShip h' ship,
         toForm (show ship)
       ]
+
 
 drawGame : Float -> Float -> Form
 drawGame w h =
@@ -62,7 +61,11 @@ drawShip gameHeight ship =
 
 direction : Signal Int
 direction =
-  Signal.map .x Keyboard.arrows
+  let
+    x = Signal.map .x Keyboard.arrows
+    delta = Time.fps 30
+  in
+    Signal.sampleOn delta x
 
 model: Signal Model
 model =
@@ -70,4 +73,4 @@ model =
 
 main : Signal Element
 main =
-  Signal.map view model
+  Signal.map2 view Window.dimensions model
