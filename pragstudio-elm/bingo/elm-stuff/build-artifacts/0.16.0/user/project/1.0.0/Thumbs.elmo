@@ -7,18 +7,12 @@ Elm.Thumbs.make = function (_elm) {
    $Basics = Elm.Basics.make(_elm),
    $Debug = Elm.Debug.make(_elm),
    $Html = Elm.Html.make(_elm),
+   $Html$Events = Elm.Html.Events.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
-   var view = function (model) {
-      return A2($Html.div,
-      _U.list([]),
-      _U.list([A2($Html.button,_U.list([]),_U.list([$Html.text(A2($Basics._op["++"],$Basics.toString(model.downs)," Thumbs Down"))]))
-              ,A2($Html.button,_U.list([]),_U.list([$Html.text(A2($Basics._op["++"],$Basics.toString(model.ups)," Thumbs Up"))]))
-              ,A2($Html.p,_U.list([]),_U.list([$Html.text($Basics.toString(model))]))]));
-   };
    var update = F2(function (action,model) {
       var _p0 = action;
       switch (_p0.ctor)
@@ -28,9 +22,34 @@ Elm.Thumbs.make = function (_elm) {
    });
    var Down = {ctor: "Down"};
    var Up = {ctor: "Up"};
+   var view = F2(function (address,model) {
+      return A2($Html.div,
+      _U.list([]),
+      _U.list([A2($Html.button,
+              _U.list([A2($Html$Events.onClick,address,Down)]),
+              _U.list([$Html.text(A2($Basics._op["++"],$Basics.toString(model.downs)," Thumbs Down"))]))
+              ,A2($Html.button,
+              _U.list([A2($Html$Events.onClick,address,Up)]),
+              _U.list([$Html.text(A2($Basics._op["++"],$Basics.toString(model.ups)," Thumbs Up"))]))
+              ,A2($Html.p,_U.list([]),_U.list([$Html.text($Basics.toString(model))]))]));
+   });
    var NoOp = {ctor: "NoOp"};
+   var inbox = $Signal.mailbox(NoOp);
+   var actions = inbox.signal;
    var initialModel = {ups: 0,downs: 0};
-   var main = view(initialModel);
+   var model = A3($Signal.foldp,update,initialModel,actions);
+   var main = A2($Signal.map,view(inbox.address),model);
    var Model = F2(function (a,b) {    return {ups: a,downs: b};});
-   return _elm.Thumbs.values = {_op: _op,Model: Model,initialModel: initialModel,NoOp: NoOp,Up: Up,Down: Down,update: update,view: view,main: main};
+   return _elm.Thumbs.values = {_op: _op
+                               ,Model: Model
+                               ,initialModel: initialModel
+                               ,NoOp: NoOp
+                               ,Up: Up
+                               ,Down: Down
+                               ,update: update
+                               ,view: view
+                               ,inbox: inbox
+                               ,actions: actions
+                               ,model: model
+                               ,main: main};
 };

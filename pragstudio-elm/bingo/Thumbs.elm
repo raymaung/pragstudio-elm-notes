@@ -30,17 +30,31 @@ update action model =
       { model | downs = model.downs - 1 }
 
 -- VIEW
-view : Model -> Html
-view model =
+view : Signal.Address Action -> Model -> Html
+view address model =
   div []
-    [ button []
+    [ button [ onClick address Down ]
         [ text ((toString model.downs) ++ " Thumbs Down") ],
-      button []
+      button [ onClick address Up]
         [ text ((toString model.ups) ++ " Thumbs Up")],
       p []
         [ text (toString model) ]
     ]
 
-main : Html
+inbox : Signal.Mailbox Action
+inbox =
+  Signal.mailbox NoOp
+
+actions : Signal Action
+actions =
+  inbox.signal
+
+
+model : Signal Model
+model =
+  Signal.foldp update initialModel actions
+
+
+main : Signal Html
 main =
-  view initialModel
+  Signal.map (view inbox.address) model
