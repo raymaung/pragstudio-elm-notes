@@ -24,7 +24,7 @@ initialShip =
 
 -- UPDATE
 
-type Action = NoOp | Left | Right
+type Action = NoOp | Left | Right | Fire Bool
 
 update: Action -> Model -> Model
 update action ship =
@@ -35,6 +35,15 @@ update action ship =
       { ship | position = ship.position - 1 }
     Right ->
      { ship | position = ship.position + 1 }
+    Fire firing ->
+      let
+        nextPowerLevel =
+          if firing then ship.powerLevel - 1 else ship.powerLevel
+      in
+        { ship |
+          isFiring = firing,
+          powerLevel = nextPowerLevel
+        }
 
 
 -- VIEW
@@ -85,9 +94,18 @@ direction =
   in
     Signal.sampleOn delta actions
 
+fire : Signal Action
+fire =
+  --Signal.map (\pressed -> Fire pressed) Keyboard.space
+  Signal.map Fire Keyboard.space
+
+input : Signal Action
+input =
+  Signal.merge direction fire
+
 model: Signal Model
 model =
-  Signal.foldp update initialShip direction
+  Signal.foldp update initialShip input
 
 main : Signal Element
 main =

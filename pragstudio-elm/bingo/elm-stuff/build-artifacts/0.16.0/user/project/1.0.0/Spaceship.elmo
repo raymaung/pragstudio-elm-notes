@@ -40,20 +40,26 @@ Elm.Spaceship.make = function (_elm) {
       switch (_p5.ctor)
       {case "NoOp": return ship;
          case "Left": return _U.update(ship,{position: ship.position - 1});
-         default: return _U.update(ship,{position: ship.position + 1});}
+         case "Right": return _U.update(ship,{position: ship.position + 1});
+         default: var _p6 = _p5._0;
+           var nextPowerLevel = _p6 ? ship.powerLevel - 1 : ship.powerLevel;
+           return _U.update(ship,{isFiring: _p6,powerLevel: nextPowerLevel});}
    });
+   var Fire = function (a) {    return {ctor: "Fire",_0: a};};
+   var fire = A2($Signal.map,Fire,$Keyboard.space);
    var Right = {ctor: "Right"};
    var Left = {ctor: "Left"};
    var NoOp = {ctor: "NoOp"};
    var direction = function () {
-      var toAction = function (n) {    var _p6 = n;switch (_p6) {case -1: return Left;case 0: return NoOp;case 1: return Right;default: return NoOp;}};
+      var toAction = function (n) {    var _p7 = n;switch (_p7) {case -1: return Left;case 0: return NoOp;case 1: return Right;default: return NoOp;}};
       var delta = $Time.fps(30);
       var x = A2($Signal.map,function (_) {    return _.x;},$Keyboard.arrows);
       var actions = A2($Signal.map,toAction,x);
       return A2($Signal.sampleOn,delta,actions);
    }();
+   var input = A2($Signal.merge,direction,fire);
    var initialShip = {position: 0,powerLevel: 10,isFiring: false};
-   var model = A3($Signal.foldp,update,initialShip,direction);
+   var model = A3($Signal.foldp,update,initialShip,input);
    var main = A3($Signal.map2,view,$Window.dimensions,model);
    var Model = F3(function (a,b,c) {    return {position: a,powerLevel: b,isFiring: c};});
    return _elm.Spaceship.values = {_op: _op
@@ -62,11 +68,14 @@ Elm.Spaceship.make = function (_elm) {
                                   ,NoOp: NoOp
                                   ,Left: Left
                                   ,Right: Right
+                                  ,Fire: Fire
                                   ,update: update
                                   ,view: view
                                   ,drawGame: drawGame
                                   ,drawShip: drawShip
                                   ,direction: direction
+                                  ,fire: fire
+                                  ,input: input
                                   ,model: model
                                   ,main: main};
 };
