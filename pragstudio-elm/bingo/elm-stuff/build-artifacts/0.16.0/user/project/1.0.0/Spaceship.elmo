@@ -41,10 +41,14 @@ Elm.Spaceship.make = function (_elm) {
       {case "NoOp": return ship;
          case "Left": return _U.update(ship,{position: ship.position - 1});
          case "Right": return _U.update(ship,{position: ship.position + 1});
-         default: var _p6 = _p5._0;
+         case "Fire": var _p6 = _p5._0;
            var nextPowerLevel = _p6 ? ship.powerLevel - 1 : ship.powerLevel;
-           return _U.update(ship,{isFiring: _p6,powerLevel: nextPowerLevel});}
+           return _U.update(ship,{isFiring: _p6,powerLevel: nextPowerLevel});
+         default: var nextPowerLevel = _U.cmp(ship.powerLevel,10) < 0 ? ship.powerLevel + 1 : ship.powerLevel;
+           return _U.update(ship,{powerLevel: nextPowerLevel});}
    });
+   var Tick = {ctor: "Tick"};
+   var ticker = A2($Signal.map,$Basics.always(Tick),$Time.every($Time.second));
    var Fire = function (a) {    return {ctor: "Fire",_0: a};};
    var fire = A2($Signal.map,Fire,$Keyboard.space);
    var Right = {ctor: "Right"};
@@ -57,7 +61,7 @@ Elm.Spaceship.make = function (_elm) {
       var actions = A2($Signal.map,toAction,x);
       return A2($Signal.sampleOn,delta,actions);
    }();
-   var input = A2($Signal.merge,direction,fire);
+   var input = $Signal.mergeMany(_U.list([direction,fire,ticker]));
    var initialShip = {position: 0,powerLevel: 10,isFiring: false};
    var model = A3($Signal.foldp,update,initialShip,input);
    var main = A3($Signal.map2,view,$Window.dimensions,model);
@@ -69,12 +73,14 @@ Elm.Spaceship.make = function (_elm) {
                                   ,Left: Left
                                   ,Right: Right
                                   ,Fire: Fire
+                                  ,Tick: Tick
                                   ,update: update
                                   ,view: view
                                   ,drawGame: drawGame
                                   ,drawShip: drawShip
                                   ,direction: direction
                                   ,fire: fire
+                                  ,ticker: ticker
                                   ,input: input
                                   ,model: model
                                   ,main: main};

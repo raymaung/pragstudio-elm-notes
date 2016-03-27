@@ -24,7 +24,7 @@ initialShip =
 
 -- UPDATE
 
-type Action = NoOp | Left | Right | Fire Bool
+type Action = NoOp | Left | Right | Fire Bool | Tick
 
 update: Action -> Model -> Model
 update action ship =
@@ -44,7 +44,12 @@ update action ship =
           isFiring = firing,
           powerLevel = nextPowerLevel
         }
-
+    Tick ->
+      let
+        nextPowerLevel =
+          if ship.powerLevel < 10 then ship.powerLevel + 1 else ship.powerLevel
+      in
+        { ship | powerLevel = nextPowerLevel }
 
 -- VIEW
 view : (Int, Int) -> Model -> Element
@@ -77,6 +82,9 @@ drawShip gameHeight ship =
       |> move ((toFloat ship.position), (50 - gameHeight / 2))
       |> alpha ((toFloat ship.powerLevel) / 10)
 
+
+-- SIGNALS
+
 direction : Signal Action
 direction =
   let
@@ -99,9 +107,14 @@ fire =
   --Signal.map (\pressed -> Fire pressed) Keyboard.space
   Signal.map Fire Keyboard.space
 
+ticker : Signal Action
+ticker =
+  -- Signal.map (\_ -> Tick) (Time.every Time.second)
+  Signal.map (always Tick) (Time.every Time.second)
+
 input : Signal Action
 input =
-  Signal.merge direction fire
+  Signal.mergeMany [direction, fire, ticker]
 
 model: Signal Model
 model =
