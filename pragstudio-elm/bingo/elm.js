@@ -10061,30 +10061,39 @@ Elm.Html.Events.make = function (_elm) {
                                     ,keyCode: keyCode
                                     ,Options: Options};
 };
-Elm.Main = Elm.Main || {};
-Elm.Main.make = function (_elm) {
+Elm.Thumbs = Elm.Thumbs || {};
+Elm.Thumbs.make = function (_elm) {
    "use strict";
-   _elm.Main = _elm.Main || {};
-   if (_elm.Main.values) return _elm.Main.values;
+   _elm.Thumbs = _elm.Thumbs || {};
+   if (_elm.Thumbs.values) return _elm.Thumbs.values;
    var _U = Elm.Native.Utils.make(_elm),
    $Basics = Elm.Basics.make(_elm),
    $Debug = Elm.Debug.make(_elm),
    $Html = Elm.Html.make(_elm),
-   $Html$Events = Elm.Html.Events.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
-   var inbox = $Signal.mailbox("Wating...");
-   var messages = inbox.signal;
-   var view = F2(function (address,greeting) {
+   var view = function (model) {
       return A2($Html.div,
       _U.list([]),
-      _U.list([A2($Html.button,_U.list([A2($Html$Events.onClick,address,"Hello")]),_U.list([$Html.text("Click for English")]))
-              ,A2($Html.button,_U.list([A2($Html$Events.onClick,address,"Salut!")]),_U.list([$Html.text("Click for French")]))
-              ,A2($Html.p,_U.list([]),_U.list([$Html.text(greeting)]))]));
+      _U.list([A2($Html.button,_U.list([]),_U.list([$Html.text(A2($Basics._op["++"],$Basics.toString(model.downs)," Thumbs Down"))]))
+              ,A2($Html.button,_U.list([]),_U.list([$Html.text(A2($Basics._op["++"],$Basics.toString(model.ups)," Thumbs Up"))]))
+              ,A2($Html.p,_U.list([]),_U.list([$Html.text($Basics.toString(model))]))]));
+   };
+   var update = F2(function (action,model) {
+      var _p0 = action;
+      switch (_p0.ctor)
+      {case "NoOp": return model;
+         case "Up": return _U.update(model,{ups: model.ups + 1});
+         default: return _U.update(model,{downs: model.downs - 1});}
    });
-   var main = A2($Signal.map,view(inbox.address),messages);
-   return _elm.Main.values = {_op: _op,view: view,inbox: inbox,messages: messages,main: main};
+   var Down = {ctor: "Down"};
+   var Up = {ctor: "Up"};
+   var NoOp = {ctor: "NoOp"};
+   var initialModel = {ups: 0,downs: 0};
+   var main = view(initialModel);
+   var Model = F2(function (a,b) {    return {ups: a,downs: b};});
+   return _elm.Thumbs.values = {_op: _op,Model: Model,initialModel: initialModel,NoOp: NoOp,Up: Up,Down: Down,update: update,view: view,main: main};
 };
