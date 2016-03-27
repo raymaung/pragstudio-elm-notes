@@ -3,6 +3,8 @@ module Thumbs where
 import Html exposing (..)
 import Html.Events exposing (..)
 
+import StartApp.Simple as StartApp
+
 -- MODEL
 
 type alias Model =
@@ -41,20 +43,24 @@ view address model =
         [ text (toString model) ]
     ]
 
-inbox : Signal.Mailbox Action
-inbox =
-  Signal.mailbox NoOp
+--inbox : Signal.Mailbox Action
+--inbox =
+--  Signal.mailbox NoOp
 
-actions : Signal Action
-actions =
-  inbox.signal
+--actions : Signal Action
+--actions =
+--  inbox.signal
 
 
-model : Signal Model
-model =
-  Signal.foldp update initialModel actions
+--model : Signal Model
+--model =
+--  Signal.foldp update initialModel actions
 
+
+--main : Signal Html
+--main =
+--  Signal.map (view inbox.address) model
 
 main : Signal Html
 main =
-  Signal.map (view inbox.address) model
+  StartApp.start { model = initialModel, view = view, update = update }

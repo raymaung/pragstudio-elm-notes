@@ -10061,6 +10061,39 @@ Elm.Html.Events.make = function (_elm) {
                                     ,keyCode: keyCode
                                     ,Options: Options};
 };
+Elm.StartApp = Elm.StartApp || {};
+Elm.StartApp.Simple = Elm.StartApp.Simple || {};
+Elm.StartApp.Simple.make = function (_elm) {
+   "use strict";
+   _elm.StartApp = _elm.StartApp || {};
+   _elm.StartApp.Simple = _elm.StartApp.Simple || {};
+   if (_elm.StartApp.Simple.values) return _elm.StartApp.Simple.values;
+   var _U = Elm.Native.Utils.make(_elm),
+   $Basics = Elm.Basics.make(_elm),
+   $Debug = Elm.Debug.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var _op = {};
+   var start = function (config) {
+      var update = F2(function (maybeAction,model) {
+         var _p0 = maybeAction;
+         if (_p0.ctor === "Just") {
+               return A2(config.update,_p0._0,model);
+            } else {
+               return _U.crashCase("StartApp.Simple",{start: {line: 91,column: 7},end: {line: 96,column: 52}},_p0)("This should never happen.");
+            }
+      });
+      var actions = $Signal.mailbox($Maybe.Nothing);
+      var address = A2($Signal.forwardTo,actions.address,$Maybe.Just);
+      var model = A3($Signal.foldp,update,config.model,actions.signal);
+      return A2($Signal.map,config.view(address),model);
+   };
+   var Config = F3(function (a,b,c) {    return {model: a,view: b,update: c};});
+   return _elm.StartApp.Simple.values = {_op: _op,Config: Config,start: start};
+};
 Elm.Thumbs = Elm.Thumbs || {};
 Elm.Thumbs.make = function (_elm) {
    "use strict";
@@ -10074,7 +10107,8 @@ Elm.Thumbs.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp$Simple = Elm.StartApp.Simple.make(_elm);
    var _op = {};
    var update = F2(function (action,model) {
       var _p0 = action;
@@ -10097,22 +10131,8 @@ Elm.Thumbs.make = function (_elm) {
               ,A2($Html.p,_U.list([]),_U.list([$Html.text($Basics.toString(model))]))]));
    });
    var NoOp = {ctor: "NoOp"};
-   var inbox = $Signal.mailbox(NoOp);
-   var actions = inbox.signal;
    var initialModel = {ups: 0,downs: 0};
-   var model = A3($Signal.foldp,update,initialModel,actions);
-   var main = A2($Signal.map,view(inbox.address),model);
+   var main = $StartApp$Simple.start({model: initialModel,view: view,update: update});
    var Model = F2(function (a,b) {    return {ups: a,downs: b};});
-   return _elm.Thumbs.values = {_op: _op
-                               ,Model: Model
-                               ,initialModel: initialModel
-                               ,NoOp: NoOp
-                               ,Up: Up
-                               ,Down: Down
-                               ,update: update
-                               ,view: view
-                               ,inbox: inbox
-                               ,actions: actions
-                               ,model: model
-                               ,main: main};
+   return _elm.Thumbs.values = {_op: _op,Model: Model,initialModel: initialModel,NoOp: NoOp,Up: Up,Down: Down,update: update,view: view,main: main};
 };
