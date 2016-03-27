@@ -6885,11 +6885,6 @@ Elm.Spaceship.make = function (_elm) {
    $Time = Elm.Time.make(_elm),
    $Window = Elm.Window.make(_elm);
    var _op = {};
-   var direction = function () {
-      var delta = $Time.fps(30);
-      var x = A2($Signal.map,function (_) {    return _.x;},$Keyboard.arrows);
-      return A2($Signal.sampleOn,delta,x);
-   }();
    var drawShip = F2(function (gameHeight,ship) {
       var shipColor = ship.isFiring ? $Color.red : $Color.blue;
       return A2($Graphics$Collage.alpha,
@@ -6908,7 +6903,23 @@ Elm.Spaceship.make = function (_elm) {
       var h$ = _p2._1;
       return A3($Graphics$Collage.collage,_p4,_p3,_U.list([A2(drawGame,w$,h$),A2(drawShip,h$,ship),$Graphics$Collage.toForm($Graphics$Element.show(ship))]));
    });
-   var update = F2(function (x,ship) {    return _U.update(ship,{position: ship.position + x});});
+   var update = F2(function (action,ship) {
+      var _p5 = action;
+      switch (_p5.ctor)
+      {case "NoOp": return ship;
+         case "Left": return _U.update(ship,{position: ship.position - 1});
+         default: return _U.update(ship,{position: ship.position + 1});}
+   });
+   var Right = {ctor: "Right"};
+   var Left = {ctor: "Left"};
+   var NoOp = {ctor: "NoOp"};
+   var direction = function () {
+      var toAction = function (n) {    var _p6 = n;switch (_p6) {case -1: return Left;case 0: return NoOp;case 1: return Right;default: return NoOp;}};
+      var delta = $Time.fps(30);
+      var x = A2($Signal.map,function (_) {    return _.x;},$Keyboard.arrows);
+      var actions = A2($Signal.map,toAction,x);
+      return A2($Signal.sampleOn,delta,actions);
+   }();
    var initialShip = {position: 0,powerLevel: 10,isFiring: false};
    var model = A3($Signal.foldp,update,initialShip,direction);
    var main = A3($Signal.map2,view,$Window.dimensions,model);
@@ -6916,6 +6927,9 @@ Elm.Spaceship.make = function (_elm) {
    return _elm.Spaceship.values = {_op: _op
                                   ,Model: Model
                                   ,initialShip: initialShip
+                                  ,NoOp: NoOp
+                                  ,Left: Left
+                                  ,Right: Right
                                   ,update: update
                                   ,view: view
                                   ,drawGame: drawGame

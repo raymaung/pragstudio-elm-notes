@@ -23,9 +23,18 @@ initialShip =
   }
 
 -- UPDATE
-update: Int -> Model -> Model
-update x ship =
-  { ship | position = ship.position + x }
+
+type Action = NoOp | Left | Right
+
+update: Action -> Model -> Model
+update action ship =
+  case action of
+    NoOp ->
+      ship
+    Left ->
+      { ship | position = ship.position - 1 }
+    Right ->
+     { ship | position = ship.position + 1 }
 
 
 -- VIEW
@@ -59,13 +68,22 @@ drawShip gameHeight ship =
       |> move ((toFloat ship.position), (50 - gameHeight / 2))
       |> alpha ((toFloat ship.powerLevel) / 10)
 
-direction : Signal Int
+direction : Signal Action
 direction =
   let
     x = Signal.map .x Keyboard.arrows
     delta = Time.fps 30
+
+    toAction n =
+      case n of
+        -1 -> Left
+        0 -> NoOp
+        1 -> Right
+        _ -> NoOp
+
+    actions = Signal.map toAction x
   in
-    Signal.sampleOn delta x
+    Signal.sampleOn delta actions
 
 model: Signal Model
 model =
