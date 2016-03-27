@@ -32,8 +32,9 @@ Elm.Spaceship.make = function (_elm) {
       var h$ = _p1._1;
       return A3($Graphics$Collage.collage,w,h,_U.list([A2(drawGame,w$,h$),A2(drawShip,h$,ship),$Graphics$Collage.toForm($Graphics$Element.show(ship))]));
    };
+   var update = F2(function (x,ship) {    return _U.update(ship,{position: ship.position + x});});
    var initialShip = {position: 0,powerLevel: 10,isFiring: false};
-   var main = view(initialShip);
+   var main = view(A2(update,100,initialShip));
    var Model = F3(function (a,b,c) {    return {position: a,powerLevel: b,isFiring: c};});
-   return _elm.Spaceship.values = {_op: _op,Model: Model,initialShip: initialShip,view: view,drawGame: drawGame,drawShip: drawShip,main: main};
+   return _elm.Spaceship.values = {_op: _op,Model: Model,initialShip: initialShip,update: update,view: view,drawGame: drawGame,drawShip: drawShip,main: main};
 };

@@ -22,6 +22,13 @@ initialShip =
     isFiring =  False
   }
 
+-- UPDATE
+update: Int -> Model -> Model
+update x ship =
+  { ship | position = ship.position + x }
+
+
+
 -- VIEW
 view: Model -> Element
 view ship =
@@ -55,4 +62,4 @@ drawShip gameHeight ship =
 
 
 main =
-  view initialShip
+  view (update 100 initialShip)
