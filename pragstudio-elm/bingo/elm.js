@@ -6877,11 +6877,13 @@ Elm.Spaceship.make = function (_elm) {
    $Debug = Elm.Debug.make(_elm),
    $Graphics$Collage = Elm.Graphics.Collage.make(_elm),
    $Graphics$Element = Elm.Graphics.Element.make(_elm),
+   $Keyboard = Elm.Keyboard.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
    var _op = {};
+   var direction = A2($Signal.map,function (_) {    return _.x;},$Keyboard.arrows);
    var drawShip = F2(function (gameHeight,ship) {
       var shipColor = ship.isFiring ? $Color.red : $Color.blue;
       return A2($Graphics$Collage.alpha,
@@ -6902,7 +6904,17 @@ Elm.Spaceship.make = function (_elm) {
    };
    var update = F2(function (x,ship) {    return _U.update(ship,{position: ship.position + x});});
    var initialShip = {position: 0,powerLevel: 10,isFiring: false};
-   var main = view(A2(update,100,initialShip));
+   var model = A3($Signal.foldp,update,initialShip,direction);
+   var main = A2($Signal.map,view,model);
    var Model = F3(function (a,b,c) {    return {position: a,powerLevel: b,isFiring: c};});
-   return _elm.Spaceship.values = {_op: _op,Model: Model,initialShip: initialShip,update: update,view: view,drawGame: drawGame,drawShip: drawShip,main: main};
+   return _elm.Spaceship.values = {_op: _op
+                                  ,Model: Model
+                                  ,initialShip: initialShip
+                                  ,update: update
+                                  ,view: view
+                                  ,drawGame: drawGame
+                                  ,drawShip: drawShip
+                                  ,direction: direction
+                                  ,model: model
+                                  ,main: main};
 };

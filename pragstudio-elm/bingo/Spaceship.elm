@@ -15,7 +15,7 @@ type alias Model =
     isFiring: Bool
   }
 
-initialShip: Model
+initialShip : Model
 initialShip =
   { position = 0,
     powerLevel = 10,
@@ -30,7 +30,7 @@ update x ship =
 
 
 -- VIEW
-view: Model -> Element
+view : Model -> Element
 view ship =
   let
     (w, h) = (400, 400)
@@ -42,13 +42,13 @@ view ship =
         toForm (show ship)
       ]
 
-drawGame: Float -> Float -> Form
+drawGame : Float -> Float -> Form
 drawGame w h =
   rect w h
     |> filled gray
 
 
-drawShip: Float -> Model -> Form
+drawShip : Float -> Model -> Form
 drawShip gameHeight ship =
   let
     shipColor =
@@ -60,6 +60,14 @@ drawShip gameHeight ship =
       |> move ((toFloat ship.position), (50 - gameHeight / 2))
       |> alpha ((toFloat ship.powerLevel) / 10)
 
+direction : Signal Int
+direction =
+  Signal.map .x Keyboard.arrows
 
+model: Signal Model
+model =
+  Signal.foldp update initialShip direction
+
+main : Signal Element
 main =
-  view (update 100 initialShip)
+  Signal.map view model
